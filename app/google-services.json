@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "290005983385",
+    "firebase_url": "https://cupboard-ae2f9.firebaseio.com",
+    "project_id": "cupboard-ae2f9",
+    "storage_bucket": "cupboard-ae2f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290005983385:android:c42d4880611662cc629808",
+        "android_client_info": {
+          "package_name": "com.asktown.cupboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "290005983385-j5pk2gvf193e48aapu9m3pg0l90gpmdm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm1LuoVtED6nQtu80OF7YnOufZGDVddpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "290005983385-j5pk2gvf193e48aapu9m3pg0l90gpmdm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
