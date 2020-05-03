@@ -3,11 +3,21 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Sign in with Google</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="MainHeading">Welcome to Cupboard 0.1!</string>
+    <string name="action_sign_out">Google Sign out</string>
+    <string name="disconnectButton">Disconnect</string>
+    <string name="google_title_text">Title Text (required?)</string>
+    <string name="signed_out">Sign out text</string>
+
+    <string name="firebase_status_fmt">Firebase UID: %s</string>
+    <string name="firebase_user_management">Firebase User Management</string>
+
+    <string name="google_status_fmt">Google User: %s</string>
+
 </resources>
