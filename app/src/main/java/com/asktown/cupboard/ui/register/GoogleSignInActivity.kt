@@ -32,6 +32,7 @@ public class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
+        Log.d(TAG, "Hello World!");
         setContentView(binding.root)
         setProgressBar(binding.progressBar)
 

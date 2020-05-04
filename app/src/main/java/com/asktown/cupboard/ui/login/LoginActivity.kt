@@ -23,9 +23,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        //setContentView(binding.root)
-
-        //val password = binding.username  //findViewById<EditText>(R.id.password)
+        setContentView(binding.root)
+        val username = findViewById<EditText>(R.id.username)
+        //val password = binding.username
         //val login = binding.signInButton  //findViewById<Button>(R.id.signinbutton)
         //val loading = binding.username    //findViewById<ProgressBar>(R.id.loading)
 
@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
             val loginState = it ?: return@Observer
 
             // disable login button unless both username / password is valid
-            binding.username.isEnabled = loginState.isDataValid
+            username.isEnabled = loginState.isDataValid
 
             if (loginState.usernameError != null) {
                 binding.username.error = getString(loginState.usernameError)
