@@ -1,4 +1,4 @@
-package com.asktown.cupboard.ui.register
+package com.asktown.cupboard.ui
 
 import android.content.Context
 import android.view.View

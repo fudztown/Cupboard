@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.View
 import com.asktown.cupboard.R
 import com.asktown.cupboard.databinding.ActivityLoginBinding
+import com.asktown.cupboard.ui.BaseActivity
+import com.asktown.cupboard.ui.main.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -102,11 +104,12 @@ public class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
                     updateUI(user)
+                    startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     // [START_EXCLUDE]
-                    val view = binding.mainLayout
+                    val view = binding.loginLayout
                     // [END_EXCLUDE]
                     Snackbar.make(view, "Authentication Failed.", Snackbar.LENGTH_SHORT).show()
                     updateUI(null)
@@ -153,13 +156,13 @@ public class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
             binding.detail.text = getString(R.string.firebase_status_fmt, user.uid)
 
             binding.signInButton.visibility = View.GONE
-            binding.signOutAndDisconnect.visibility = View.VISIBLE
+            binding.signOutAndDisconnectLoginLayout.visibility = View.VISIBLE
         } else {
             binding.status.setText(R.string.signed_out)
             binding.detail.text = null
 
             binding.signInButton.visibility = View.VISIBLE
-            binding.signOutAndDisconnect.visibility = View.GONE
+            binding.signOutAndDisconnectLoginLayout.visibility = View.GONE
         }
     }
 
