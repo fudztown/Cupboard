@@ -157,6 +157,7 @@ public class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
 
             binding.signInButton.visibility = View.GONE
             binding.signOutAndDisconnectLoginLayout.visibility = View.VISIBLE
+            startActivity(Intent(this, MainActivity::class.java))
         } else {
             binding.status.setText(R.string.signed_out)
             binding.detail.text = null

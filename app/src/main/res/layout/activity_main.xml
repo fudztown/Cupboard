@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/welcomeLayout"
@@ -8,21 +9,22 @@
 
 
         <include
-            android:id="@+id/include2"
-            layout="@layout/activity_main_toolbar"
-            android:layout_width="wrap_content"
+            android:id="@+id/toolbar2"
+            layout="@layout/drawer_toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <include
-            android:id="@+id/include"
-            layout="@layout/activity_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+            layout="@layout/content_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <com.google.android.material.navigation.NavigationView
-            android:id="@+id/draw_menu_nav"
+            android:id="@+id/navigationView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:menu="@menu/draw_menu"
+            app:headerLayout="@layout/drawer_header"
             android:layout_gravity="start"
             android:fitsSystemWindows="true" />
 
