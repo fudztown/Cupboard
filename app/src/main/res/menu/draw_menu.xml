@@ -3,7 +3,11 @@
     <item android:title="My Cupboard">
         <menu>
             <item
-                android:id="@+id/mi_add2"
+                android:id="@+id/home"
+                android:title="Home"
+                android:icon="@drawable/ic_home_black_24dp" />
+            <item
+                android:id="@+id/spiceRack"
                 android:icon="@drawable/ic_group_add_black_24dp"
                 android:title="Spice Rack" />
         </menu>
