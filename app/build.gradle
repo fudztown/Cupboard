@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-
+// Apply the Performance Monitoring plugin
+apply plugin: 'com.google.firebase.firebase-perf'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -34,13 +36,18 @@ dependencies {
 
     // Google Sign In SDK (only required for Google Sign In)
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
-
     // Firebase Config? (Kotlin)
     implementation 'com.google.firebase:firebase-config-ktx:19.1.2'
     // Firebase Authentication (Kotlin)
     implementation 'com.google.firebase:firebase-auth-ktx:19.3.1'
     // Firebase Analytics (Kotlin)
-    //implementation 'com.google.firebase:firebase-analytics-ktx:19.3.1'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.4.1'
+    // FireStore implementation (Kotlin)
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
+    //Allow databindings
+
+
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'

@@ -30,6 +30,7 @@ public class MainActivity : BaseActivity(), View.OnClickListener,
     private lateinit var fragmentManager: FragmentManager
     private lateinit var fragmentTransaction: FragmentTransaction
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
