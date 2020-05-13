@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.asktown.cupboard.R
+import com.asktown.cupboard.data.control.IngredientDataGather
 import com.asktown.cupboard.data.model.Ingredient
 import com.asktown.cupboard.data.model.IngredientCard
 import com.asktown.cupboard.databinding.FragmentSpicerackBinding
+import kotlinx.android.synthetic.main.fragment_spicerack.*
 
 public class FragmentSpiceRack : Fragment() {
 
@@ -30,9 +32,9 @@ public class FragmentSpiceRack : Fragment() {
     }
 
     //Load Ingredients into the cards on the fragment
-    fun loadIngredients() {
-        var ing: Ingredient = Ingredient()
-        var cards: ArrayList<IngredientCard> = ArrayList<IngredientCard>()
+    fun loadIngredients() : ArrayList<Ingredient> {
+        var ing = IngredientDataGather()
+        var ingredients: ArrayList<Ingredient> = ArrayList<Ingredient>()
 
 
         //TODO: Loading in spice only for now
@@ -41,8 +43,8 @@ public class FragmentSpiceRack : Fragment() {
                 for (document in result) {
                     Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
                     Log.d(ContentValues.TAG, "Name: ${document.data["Name"]}")
-                    cards.add(
-                        IngredientCard(
+                    ingredients.add(
+                        Ingredient(
                             "${document.data["Name"]}",
                             "${document.data["Type"]}",
                             "${document.data["ImgLocation"]}"
@@ -50,19 +52,22 @@ public class FragmentSpiceRack : Fragment() {
                     )
                 }
             }
-
+        return ingredients
     }
-
+//TODO: Not sure if this will work here... we will see!
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ingRecyclerView = binding.ingredientList
-        ingRecyclerView.layoutManager = LinearLayoutManager(activity)
-        ingRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                activity,
-                DividerItemDecoration.VERTICAL
-            )
-        )
+        ingredientList.addItemDecoration(  DividerItemDecoration(
+            activity,
+            DividerItemDecoration.VERTICAL
+        ))
+        ingredientList.apply {
+            // set a LinearLayoutManager to handle Android
+            // RecyclerView behavior
+            layoutManager = LinearLayoutManager(activity)
+            // set the custom adapter to the RecyclerView
+            adapter = IngredientListAdaptor(loadIngredients())
+        }
 
 
     }
