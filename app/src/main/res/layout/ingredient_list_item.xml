@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        <data class="IngredientDataBinding">
 
-    <data class="IngredientDataBinding">
+            <variable
+                name="viewModel"
+                type="com.asktown.cupboard.data.view.IngredientViewModel" />
 
-        <variable
-            name="viewModel"
-            type="com.asktown.cupboard.data.view.IngredientViewModel" />
+            <variable
+                name="handler"
+                type="com.asktown.cupboard.ui.main.IngredientClickHandler" />
 
-        <variable
-            name="handler"
-            type="com.asktown.cupboard.ui.main.IngredientClickHandler" />
+        </data>
+    -->
 
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#C55555"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/ing_list_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:text="@{viewModel.ingredientName}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="left"
+            android:paddingLeft="16dp"
+            android:text="@string/action_sign_in_short"
+            android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/ing_list_item_img"
+        <TextView
+            android:id="@+id/ing_list_item_name2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:imgSrc="@{viewModel.imgScrId}"
-            android:onClick="@{(v) -> handler.onImgClick()}" />
+            android:layout_gravity="left"
+            android:paddingLeft="16dp"
+            android:text="@string/action_sign_in_short" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--
+     <ImageButton
+         android:id="@+id/ing_list_item_img"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="10dp"
+         android:layout_marginEnd="10dp"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+
+          app:imgSrc="@{viewModel.imgScrId}" -->
+        android:onClick="@{(v) -> handler.onImgClick()}"
+        />
+        -->
+    </LinearLayout>
 </layout>

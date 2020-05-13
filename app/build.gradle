@@ -44,7 +44,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx:17.4.1'
     // FireStore implementation (Kotlin)
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
-    //Allow databindings
+
+    // firebase UI lib (give it a go!)
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
+    // Paging Library
+    implementation 'android.arch.paging:runtime:1.0.1'
 
 
 

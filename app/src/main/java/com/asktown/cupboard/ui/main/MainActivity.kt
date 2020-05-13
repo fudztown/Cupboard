@@ -30,27 +30,16 @@ public class MainActivity : BaseActivity(), View.OnClickListener,
     private lateinit var fragmentManager: FragmentManager
     private lateinit var fragmentTransaction: FragmentTransaction
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //Setup bindings
         binding = ActivityMainBinding.inflate(layoutInflater)
-
-
         //navigation listener
         navigationView = binding.navigationView;
         navigationView.setNavigationItemSelectedListener(this)
-
-
-
-
-
-        Log.d(TAG, "Into Main Page");
-
-        //Set view
+        //Set view (default view)
         setContentView(binding.root)
-
-
         //Check user logged in
         var user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -79,6 +68,8 @@ public class MainActivity : BaseActivity(), View.OnClickListener,
 
     }
 
+    fun initRecyclerView() {}
+
     // [END onactivityresult]
     override fun onClick(v: View) {
         when (v.id) {
@@ -103,7 +94,7 @@ public class MainActivity : BaseActivity(), View.OnClickListener,
             fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(
                 binding.fragmentLoad.fragment_container.id,
-                FragmentSpiceRack()
+                FragmentSpiceRack.newInstance()
             )
             fragmentTransaction.commit()
         }
