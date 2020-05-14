@@ -11,7 +11,7 @@
 
             <variable
                 name="handler"
-                type="com.asktown.cupboard.ui.main.IngredientClickHandler" />
+                type="com.asktown.cupboard.ui.ingredience.IngredientClickHandler" />
 
         </data>
         //add to imgButton

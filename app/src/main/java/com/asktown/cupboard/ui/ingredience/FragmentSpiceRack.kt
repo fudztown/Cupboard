@@ -1,4 +1,4 @@
-package com.asktown.cupboard.ui.main
+package com.asktown.cupboard.ui.ingredience
 
 import android.app.Activity
 import android.os.Bundle
@@ -149,7 +149,8 @@ class FragmentSpiceRack : Fragment() {
 
     // TODO: Confirm what this is? "companion object"
     companion object {
-        fun newInstance(): FragmentSpiceRack = FragmentSpiceRack()
+        fun newInstance(): FragmentSpiceRack =
+            FragmentSpiceRack()
     }
 
 }
