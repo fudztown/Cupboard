@@ -6,7 +6,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties
 // also update information in the collection
 @IgnoreExtraProperties
 data class Ingredient(
-    var name: String? = null,
-    var type: String? = null,
-    var imgLocation: String? = null
+    var Name: String? = null,
+    var Type: String? = null,
+    var ImgLocation: String? = null
 )
