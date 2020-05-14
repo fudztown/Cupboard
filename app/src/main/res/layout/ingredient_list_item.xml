@@ -2,21 +2,14 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--
-        <data class="IngredientDataBinding">
 
-            <variable
-                name="viewModel"
-                type="com.asktown.cupboard.data.view.IngredientViewModel" />
+        <data class="IngredientDataBinding">
 
             <variable
                 name="handler"
                 type="com.asktown.cupboard.ui.main.IngredientClickHandler" />
 
         </data>
-        //add to imgButton
-        android:onClick="@{(v) -> handler.onImgClick()}"
-    -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -42,6 +35,7 @@
             android:layout_width="73dp"
             android:layout_height="72dp"
             android:layout_gravity="right"
+            android:onClick="@{(v) -> handler.onImgClick()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
