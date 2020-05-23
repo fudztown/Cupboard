@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.asktown.cupboard.R
 import com.asktown.cupboard.databinding.ActivityMainBinding
 import com.asktown.cupboard.ui.BaseActivity
-import com.asktown.cupboard.ui.ingredience.FragmentSpiceRack
+import com.asktown.cupboard.ui.ingredients.FragmentSpiceRack
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.content_main.view.*

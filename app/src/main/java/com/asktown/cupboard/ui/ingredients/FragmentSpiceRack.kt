@@ -1,7 +1,8 @@
-package com.asktown.cupboard.ui.ingredience
+package com.asktown.cupboard.ui.ingredients
 
 import android.app.Activity
 import android.os.Bundle
+import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.asktown.cupboard.R
 import com.asktown.cupboard.data.model.Ingredient
 import com.asktown.cupboard.data.viewholder.IngredientViewHolder
+import com.asktown.cupboard.databinding.IngredientDataBinding
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.firebase.ui.firestore.paging.LoadingState
@@ -89,9 +91,15 @@ class FragmentSpiceRack : Fragment() {
                 parent: ViewGroup,
                 viewType: Int
             ): IngredientViewHolder {
-                val view = layoutInflater.inflate(R.layout.ingredient_list_item, parent, false)
+
+                //Changed this to databinding.. not sure what will happen now!
+                //val view = layoutInflater.inflate(R.layout.ingredient_list_item, parent, false)
+                val db: IngredientDataBinding =
+                    IngredientDataBinding.inflate(layoutInflater, parent, false)
+
+
                 return IngredientViewHolder(
-                    view
+                    db
                 )
             }
 
@@ -100,8 +108,22 @@ class FragmentSpiceRack : Fragment() {
                 position: Int,
                 ing: Ingredient
             ) {
-                // Bind to ViewHolder
+                // Bind to ViewHolder (no position selected)
                 viewHolder.bind(ing)
+
+                //Setup on click event
+
+                var clickerDataBinding: IngredientDataBinding? = viewHolder.mIngredientDataBinding
+
+                if (clickerDataBinding != null) {
+                    clickerDataBinding.handler = object : IngredientClickHandler {
+                        override fun onImgClick() {
+                            Log.d("TAG", "Click recorded")
+                        }
+                    }
+                }
+
+
             }
 
             override fun onError(e: Exception) {
