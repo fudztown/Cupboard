@@ -1,8 +1,10 @@
 package com.asktown.cupboard.ui.ingredients
 
 import android.app.Activity
+import android.content.ContentValues.TAG
+import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
-import android.text.Layout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,7 @@ import com.asktown.cupboard.databinding.IngredientDataBinding
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.firebase.ui.firestore.paging.LoadingState
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_spicerack.*
@@ -28,8 +31,33 @@ class FragmentSpiceRack : Fragment() {
 
     private lateinit var mAdapter: FirestorePagingAdapter<Ingredient, IngredientViewHolder>
     private val mFireStore = FirebaseFirestore.getInstance()
-    private val mPostsCollection = mFireStore.collection("Ingredients")
-    private val mQuery = mPostsCollection.orderBy("Name", Query.Direction.DESCENDING)
+    private val mIngCollection = mFireStore.collection("Ingredients")
+
+
+    private val mQuery = mIngCollection.orderBy("Name", Query.Direction.ASCENDING)
+
+    private lateinit var mMediaPlayer: MediaPlayer
+
+    private fun getChef() {
+        var user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            Log.d(TAG, "Current User: " + user.uid)
+            val mChefCollection = mFireStore.collection("Chef")
+                .whereEqualTo("chef_id", user.uid)
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        Log.d(TAG, "${document.id} => ${document.data}")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                }
+
+
+        };
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +89,7 @@ class FragmentSpiceRack : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        getChef()
         mAdapter.startListening()
     }
 
@@ -110,15 +139,33 @@ class FragmentSpiceRack : Fragment() {
             ) {
                 // Bind to ViewHolder (no position selected)
                 viewHolder.bind(ing)
+                //Setup Media player for click noises!
 
                 //Setup on click event
-
                 var clickerDataBinding: IngredientDataBinding? = viewHolder.mIngredientDataBinding
+
+
 
                 if (clickerDataBinding != null) {
                     clickerDataBinding.handler = object : IngredientClickHandler {
                         override fun onImgClick() {
                             Log.d("TAG", "Click recorded")
+                            if (clickerDataBinding.ingListItemImg.colorFilter != null) {
+                                mMediaPlayer = MediaPlayer.create(context, R.raw.popdeselected)
+                                mMediaPlayer.start()
+                                clickerDataBinding.ingListItemImg.clearColorFilter()
+                            } else {
+                                mMediaPlayer = MediaPlayer.create(context, R.raw.popselected)
+                                mMediaPlayer.start()
+                                clickerDataBinding.ingListItemImg.setColorFilter(
+                                    Color.argb(
+                                        125,
+                                        0,
+                                        0,
+                                        0
+                                    )
+                                )
+                            }
                         }
                     }
                 }
