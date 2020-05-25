@@ -17,6 +17,7 @@ class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var mIngName: TextView? = null
     private var mIngType: TextView? = null
+    private var mIngGuid: TextView? = null
     private var mIngImgView: ImageView? = null
     var mIngredientDataBinding: IngredientDataBinding? = null
 
@@ -28,12 +29,14 @@ class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         mIngName = itemView.findViewById(R.id.ing_list_item_name)
         mIngType = itemView.findViewById(R.id.ing_list_item_name2)
         mIngImgView = itemView.findViewById(R.id.ing_list_item_img)
+        mIngGuid = itemView.findViewById(R.id.ing_list_item_guid)
     }
 
     fun bind(ing: Ingredient) {
         mIngName?.text = ing.Name
         mIngType?.text = ing.Type
         mIngImgView?.let { Glide.with(itemView.context).load(ing.ImgLocation).into(it) }
+        mIngGuid?.text = ing.Guid
     }
 
 

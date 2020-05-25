@@ -8,5 +8,6 @@ data class Chef(
     var Surname: String? = null,
     var Username: String? = null,
     var chef_id: String? = null,
-    var Level: Int? = null
+    var Level: Int? = null,
+    var Doc_id: String? = null
 )

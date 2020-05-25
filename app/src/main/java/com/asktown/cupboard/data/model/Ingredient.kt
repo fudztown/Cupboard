@@ -8,5 +8,6 @@ import com.google.firebase.firestore.IgnoreExtraProperties
 data class Ingredient(
     var Name: String? = null,
     var Type: String? = null,
-    var ImgLocation: String? = null
+    var ImgLocation: String? = null,
+    var Guid: String? = null
 )
