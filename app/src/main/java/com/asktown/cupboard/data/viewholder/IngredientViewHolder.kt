@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.asktown.cupboard.R
-import com.asktown.cupboard.data.model.Ingredient
+import com.asktown.cupboard.data.model.ChefIngredient
 import com.asktown.cupboard.databinding.IngredientDataBinding
 import com.bumptech.glide.Glide
 
@@ -32,7 +32,7 @@ class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         mIngGuid = itemView.findViewById(R.id.ing_list_item_guid)
     }
 
-    fun bind(ing: Ingredient) {
+    fun bind(ing: ChefIngredient) {
         mIngName?.text = ing.Name
         mIngType?.text = ing.Type
         mIngImgView?.let { Glide.with(itemView.context).load(ing.ImgLocation).into(it) }
