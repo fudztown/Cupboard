@@ -33,10 +33,10 @@ class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun bind(ing: ChefIngredient) {
-        mIngName?.text = ing.Name
-        mIngType?.text = ing.Type
-        mIngImgView?.let { Glide.with(itemView.context).load(ing.ImgLocation).into(it) }
-        mIngGuid?.text = ing.Guid
+        mIngName?.text = ing.name
+        mIngType?.text = ing.type
+        mIngImgView?.let { Glide.with(itemView.context).load(ing.imgLocation).into(it) }
+        mIngGuid?.text = ing.guid
     }
 
 

@@ -5,12 +5,12 @@ import com.google.firebase.firestore.IgnoreExtraProperties
 
 @IgnoreExtraProperties
 data class ChefIngredient(
-    var Amount: Int? = null,
-    var IngID: String? = null,
-    var UsedBy: Timestamp? = null,
-    var HasIng: Boolean? = null,
-    var ImgLocation: String? = null,
-    var Guid: String? = null,
-    var Name: String? = null,
-    var Type: String? = null
+    var amount: Int? = null,
+    var ingID: String? = null,
+    var usedBy: Timestamp? = null,
+    var hasIng: Boolean? = null,
+    var imgLocation: String? = null,
+    var guid: String? = null,
+    var name: String? = null,
+    var type: String? = null
 )

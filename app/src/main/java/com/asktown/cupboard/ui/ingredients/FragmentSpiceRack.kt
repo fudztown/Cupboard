@@ -36,10 +36,9 @@ class FragmentSpiceRack : Fragment() {
     private val mIngCollection =
         mFireStore.collection("Chef").document(mFireBaseUser?.uid.toString())
             .collection("ChefIngredients")
-    private val mQuery = mIngCollection.orderBy("Name", Query.Direction.ASCENDING)
+    private val mQuery = mIngCollection.orderBy("name", Query.Direction.ASCENDING)
     //Media player for sound files
     private lateinit var mMediaPlayer: MediaPlayer
-    private val mChefIngredients: ArrayList<String> = ArrayList()
 
     //TODO: Probably on main load, will populate user with the latest ingredients in Firebase
 
@@ -81,6 +80,14 @@ class FragmentSpiceRack : Fragment() {
     }
 
 
+    private fun writeHasIng(cIng: ChefIngredient, doc: String) {
+        mIngCollection.document(doc)
+            .set(cIng)
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+    }
+
+
     private fun setupAdapter(ingredientList: RecyclerView) {
 
         // Init Paging Configuration
@@ -90,14 +97,12 @@ class FragmentSpiceRack : Fragment() {
             .setPageSize(10)
             .build()
 
-        val query = mIngCollection.orderBy("Name", Query.Direction.ASCENDING)
-
         // Init Adapter Configuration
         val options = FirestorePagingOptions.Builder<ChefIngredient>()
             .setLifecycleOwner(this)
-            .setQuery(query, config) { snapshot ->
+            .setQuery(mQuery, config) { snapshot ->
                 val ing: ChefIngredient = snapshot.toObject(ChefIngredient::class.java)!!
-                ing.Guid = snapshot.id
+                ing.guid = snapshot.id
                 ing
             }
             .build()
@@ -129,20 +134,7 @@ class FragmentSpiceRack : Fragment() {
                 //Setup on click event
                 val clickerDataBinding: IngredientDataBinding? = viewHolder.mIngredientDataBinding
                 if (clickerDataBinding != null) {
-                    Log.d(TAG, "Checking size " + mChefIngredients.size)
-                    if (mChefIngredients.contains(ing.Guid.toString())) {
-                        Log.d(TAG, "EPIC SUCCESS WE'RE HERE!!! The user has : " + ing.Name)
-                        clickerDataBinding.ingListItemImg.setColorFilter(
-                            Color.argb(
-                                125,
-                                0,
-                                0,
-                                0
-                            )
-                        )
-                    }
-                    if (ing.HasIng!!) {
-                        Log.d(TAG, "The Chef has " + ing.Name)
+                    if (ing.hasIng!!) {
                         clickerDataBinding.ingListItemImg.setColorFilter(
                             Color.argb(
                                 125,
@@ -154,15 +146,18 @@ class FragmentSpiceRack : Fragment() {
                     }
                     clickerDataBinding.handler = object : IngredientClickHandler {
                         override fun onImgClick() {
-                            Log.d(TAG, "Click recorded")
+                            //Writing to firebase on every click
+
                             if (clickerDataBinding.ingListItemImg.colorFilter != null) {
                                 //Setup Media player for click noises!
                                 mMediaPlayer = MediaPlayer.create(context, R.raw.popdeselected)
                                 mMediaPlayer.start()
+                                ing.hasIng = false
                                 clickerDataBinding.ingListItemImg.clearColorFilter()
                             } else {
                                 mMediaPlayer = MediaPlayer.create(context, R.raw.popselected)
                                 mMediaPlayer.start()
+                                ing.hasIng = true
                                 clickerDataBinding.ingListItemImg.setColorFilter(
                                     Color.argb(
                                         125,
@@ -171,8 +166,8 @@ class FragmentSpiceRack : Fragment() {
                                         0
                                     )
                                 )
-                                //TODO update record to show the Chef has it!
                             }
+                            writeHasIng(ing, ing.guid.toString())
                         }
                     }
                 }
@@ -182,7 +177,7 @@ class FragmentSpiceRack : Fragment() {
 
             override fun onError(e: Exception) {
                 super.onError(e)
-                Log.e("MainActivity", e.message.toString())
+                Log.e("FragmentSpiceRack", e.message.toString())
             }
 
 
@@ -221,8 +216,6 @@ class FragmentSpiceRack : Fragment() {
 
     }
 
-
-    // TODO: Confirm what this is? "companion object"
     companion object {
         fun newInstance(): FragmentSpiceRack =
             FragmentSpiceRack()
