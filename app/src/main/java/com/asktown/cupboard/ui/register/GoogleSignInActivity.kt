@@ -34,7 +34,6 @@ public class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        Log.d(TAG, "Hello World!");
         setContentView(binding.root)
         setProgressBar(binding.progressBar)
 
@@ -103,7 +102,8 @@ public class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    updateUI(user)
+                    //TODO: Removed this, but there are some elements (sign out, etc that need to be considered on the main UI)
+                    //updateUI(user)
                     startActivity(Intent(this, MainActivity::class.java))
                 } else {
                     // If sign in fails, display a message to the user.

@@ -27,16 +27,17 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_spicerack.*
 
-
 class FragmentSpiceRack : Fragment() {
 
     private lateinit var mAdapter: FirestorePagingAdapter<ChefIngredient, IngredientViewHolder>
-    private val mFireStore = FirebaseFirestore.getInstance()
+
     private val mFireBaseUser = FirebaseAuth.getInstance().currentUser
+    private val mFireStore = FirebaseFirestore.getInstance()
     private val mIngCollection =
         mFireStore.collection("Chef").document(mFireBaseUser?.uid.toString())
             .collection("ChefIngredients")
     private val mQuery = mIngCollection.orderBy("name", Query.Direction.ASCENDING)
+
     //Media player for sound files
     private lateinit var mMediaPlayer: MediaPlayer
 
@@ -89,6 +90,7 @@ class FragmentSpiceRack : Fragment() {
 
 
     private fun setupAdapter(ingredientList: RecyclerView) {
+
 
         // Init Paging Configuration
         val config = PagedList.Config.Builder()
