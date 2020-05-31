@@ -21,11 +21,15 @@ import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.content_main.view.*
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.tasks.await
 
 class MainActivity : BaseActivity(), View.OnClickListener,
     NavigationView.OnNavigationItemSelectedListener {
@@ -84,6 +88,10 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         fragmentTransaction.add(binding.fragmentLoad.fragment_container.id, FragmentNewsFeed())
         fragmentTransaction.commit()
 
+        CoroutineScope(IO).launch{
+            syncIngredients()
+        }
+
     }
 
     //TODO: not sure if i need this atm?
@@ -122,68 +130,52 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         return true
     }
 
-    suspend fun syncIngredients(): Boolean {
-        val chefIng: HashMap<String, ChefIngredient>
+    private suspend fun syncIngredients(): Boolean {
         val masterIng: ArrayList<Ingredient>
         //Show Sync Progress icon
 
         //Get current user's Ingredients
-        chefIng = getChefIngredients()
+            val chefIng: HashMap<String, ChefIngredient> = getChefIngredients()
+            Log.d(TAG, "Found : ${chefIng.size} Chef Ingredients")
+
         //Get the mast Ingredients
         masterIng = getMasterIngredients()
         //Compare both sets and build update master
-
+        for (ing in masterIng){
+            if(!chefIng.containsKey(ing.Guid)){
+                //TODO add to the list push to chefIng as new ing.
+            }
+        }
         //Update user with new Ingredients
-
+        //TODO can we just upload chefIng into here?
         //Show Sync completed
         delay(100)
         return false
     }
 
-    suspend fun getChefIngredients(): HashMap<String, ChefIngredient> {
+    private suspend fun getChefIngredients(): HashMap<String, ChefIngredient> {
         val chefIng: HashMap<String, ChefIngredient> = HashMap()
-        //Do something
-        mQuery
-            .whereLessThan("age", "ageCondition")
-            .get()
-            .addOnSuccessListener() { documents ->
-                try {
-                    if (documents != null) {
-                        for (document in documents) {
-                            Log.d(TAG, "${document.id} => ${document.data}")
-                            //chefIng.set(document.id, document.data.)
-                        }
-                    } else {
-                        Log.d(TAG, "Fail")
-                    }
-                } catch (ex: Exception) {
-                    Log.e(TAG, ex.message)
-                }
-            }.addOnFailureListener { e ->
-                Log.e(TAG, "Error writing document", e)
+        val data =  try {
+            mQuery
+                .get()
+                .await()
+        }catch (e : Exception){
+            null
+        }
+        data
+        if(data!=null){
+            for( document in data.documents){
+                Log.d(TAG, "Found : ${document.data} Chef Ingredients")
+                chefIng[document.id] = document.toObject(ChefIngredient::class.java)!!
             }
-
-        // Init Paging Configuration
-        val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setPrefetchDistance(2)
-            .setPageSize(10)
-            .build()
-
-        val options = FirestorePagingOptions.Builder<ChefIngredient>()
-            .setLifecycleOwner(this)
-            .setQuery(mQuery, config) { snapshot ->
-                val ing: ChefIngredient = snapshot.toObject(ChefIngredient::class.java)!!
-                ing.guid = snapshot.id
-                ing
-            }
-            .build()
-
-
-        return chefIng
+        }
+       return chefIng
     }
 
     suspend fun getMasterIngredients(): ArrayList<Ingredient> {
+        //TODO ensure the values or Ingredient and ChefIngredient are the same
+        //Will probably do a Hashmap here too. We'll see.
+
         val masterIng: ArrayList<Ingredient> = ArrayList()
         //Do something
 
