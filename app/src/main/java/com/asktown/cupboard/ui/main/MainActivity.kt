@@ -10,21 +10,17 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.paging.PagedList
 import com.asktown.cupboard.R
 import com.asktown.cupboard.data.model.ChefIngredient
 import com.asktown.cupboard.data.model.Ingredient
 import com.asktown.cupboard.databinding.ActivityMainBinding
 import com.asktown.cupboard.ui.BaseActivity
 import com.asktown.cupboard.ui.ingredients.FragmentSpiceRack
-import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.content_main.view.*
 import kotlinx.coroutines.*
@@ -131,7 +127,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,
     }
 
     private suspend fun syncIngredients(): Boolean {
-        val masterIng: ArrayList<Ingredient>
+        val masterIng: HashMap<String, Ingredient>
         //Show Sync Progress icon
 
         //Get current user's Ingredients
@@ -142,7 +138,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         masterIng = getMasterIngredients()
         //Compare both sets and build update master
         for (ing in masterIng){
-            if(!chefIng.containsKey(ing.Guid)){
+            if(!chefIng.containsKey(ing.key)){
                 //TODO add to the list push to chefIng as new ing.
             }
         }
@@ -172,13 +168,25 @@ class MainActivity : BaseActivity(), View.OnClickListener,
        return chefIng
     }
 
-    suspend fun getMasterIngredients(): ArrayList<Ingredient> {
+    suspend fun getMasterIngredients(): HashMap<String,Ingredient> {
         //TODO ensure the values or Ingredient and ChefIngredient are the same
         //Will probably do a Hashmap here too. We'll see.
 
-        val masterIng: ArrayList<Ingredient> = ArrayList()
-        //Do something
-
+        val masterIng: HashMap<String, Ingredient> = HashMap()
+        val data =  try {
+            mQuery
+                .get()
+                .await()
+        }catch (e : Exception){
+            null
+        }
+        data
+        if(data!=null){
+            for( document in data.documents){
+                Log.d(TAG, "Found : ${document.data} Chef Ingredients")
+                masterIng[document.id] = document.toObject(Ingredient::class.java)!!
+            }
+        }
         return masterIng
     }
 
