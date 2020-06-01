@@ -100,6 +100,7 @@ class FragmentSpiceRack : Fragment() {
             .build()
 
         // Init Adapter Configuration
+        //TODO - understand why we can't see the new ingredients
         val options = FirestorePagingOptions.Builder<ChefIngredient>()
             .setLifecycleOwner(this)
             .setQuery(mQuery, config) { snapshot ->

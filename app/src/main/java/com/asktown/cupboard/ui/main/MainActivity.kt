@@ -23,8 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.content_main.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class MainActivity : BaseActivity(), View.OnClickListener,
@@ -41,10 +42,16 @@ class MainActivity : BaseActivity(), View.OnClickListener,
 
     private val mFireBaseUser = FirebaseAuth.getInstance().currentUser
     private val mFireStore = FirebaseFirestore.getInstance()
+
+    //chef ings
     private val mIngCollection =
         mFireStore.collection("Chef").document(mFireBaseUser?.uid.toString())
             .collection("ChefIngredients")
     private val mQuery = mIngCollection.orderBy("name", Query.Direction.ASCENDING)
+
+    //mast ings
+    private val mIngCollection2 =
+        mFireStore.collection("Ingredients")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,25 +134,31 @@ class MainActivity : BaseActivity(), View.OnClickListener,
     }
 
     private suspend fun syncIngredients(): Boolean {
-        val masterIng: HashMap<String, Ingredient>
         //Show Sync Progress icon
-
+        val newChefIngredient = ChefIngredient()
         //Get current user's Ingredients
             val chefIng: HashMap<String, ChefIngredient> = getChefIngredients()
             Log.d(TAG, "Found : ${chefIng.size} Chef Ingredients")
 
         //Get the mast Ingredients
-        masterIng = getMasterIngredients()
+        val masterIng: HashMap<String, Ingredient> = getMasterIngredients()
         //Compare both sets and build update master
         for (ing in masterIng){
-            if(!chefIng.containsKey(ing.key)){
-                //TODO add to the list push to chefIng as new ing.
+            if (!chefIng.containsKey(ing.key)) {
+                newChefIngredient.name = ing.value.Name
+                newChefIngredient.type = ing.value.Type
+                newChefIngredient.imgLocation = ing.value.ImgLocation
+                newChefIngredient.ingID = ing.key
+                newChefIngredient.hasIng = false
+                chefIng[ing.key] = newChefIngredient
             }
         }
         //Update user with new Ingredients
-        //TODO can we just upload chefIng into here?
-        //Show Sync completed
-        delay(100)
+        for (ing in chefIng) {
+            mIngCollection.document(ing.key)
+                .set(ing.value)
+                .await()
+        }
         return false
     }
 
@@ -158,7 +171,6 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         }catch (e : Exception){
             null
         }
-        data
         if(data!=null){
             for( document in data.documents){
                 Log.d(TAG, "Found : ${document.data} Chef Ingredients")
@@ -168,33 +180,25 @@ class MainActivity : BaseActivity(), View.OnClickListener,
        return chefIng
     }
 
-    suspend fun getMasterIngredients(): HashMap<String,Ingredient> {
+    private suspend fun getMasterIngredients(): HashMap<String, Ingredient> {
         //TODO ensure the values or Ingredient and ChefIngredient are the same
         //Will probably do a Hashmap here too. We'll see.
 
         val masterIng: HashMap<String, Ingredient> = HashMap()
-        val data =  try {
-            mQuery
+        val data = try {
+            mIngCollection2
                 .get()
                 .await()
-        }catch (e : Exception){
+        } catch (e: Exception) {
             null
         }
-        data
         if(data!=null){
             for( document in data.documents){
-                Log.d(TAG, "Found : ${document.data} Chef Ingredients")
+                Log.d(TAG, "Found : ${document.data} Master Ingredients")
                 masterIng[document.id] = document.toObject(Ingredient::class.java)!!
             }
         }
         return masterIng
     }
-
-
-    suspend fun checkChefAccount(): Boolean {
-        //Get current user's
-        return false
-    }
-
 
 }
