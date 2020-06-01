@@ -1,5 +1,6 @@
 package com.asktown.cupboard.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -11,11 +12,16 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.asktown.cupboard.R
+import com.asktown.cupboard.data.model.Chef
 import com.asktown.cupboard.data.model.ChefIngredient
 import com.asktown.cupboard.data.model.Ingredient
 import com.asktown.cupboard.databinding.ActivityMainBinding
 import com.asktown.cupboard.ui.BaseActivity
 import com.asktown.cupboard.ui.ingredients.FragmentSpiceRack
+import com.asktown.cupboard.ui.register.GoogleSignInActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -39,9 +45,13 @@ class MainActivity : BaseActivity(), View.OnClickListener,
     private lateinit var auth: FirebaseAuth
     private lateinit var fragmentManager: FragmentManager
     private lateinit var fragmentTransaction: FragmentTransaction
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     private val mFireBaseUser = FirebaseAuth.getInstance().currentUser
     private val mFireStore = FirebaseFirestore.getInstance()
+
+    //Check
+    private val mChefCollection = mFireStore.collection("Chef")
 
     //chef ings
     private val mIngCollection =
@@ -57,9 +67,22 @@ class MainActivity : BaseActivity(), View.OnClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        CoroutineScope(IO).launch {
+            if (hasChefAccount()) {
+                Log.d(TAG, "User account found")
+            } else {
+                Log.d(TAG, "No user account - trigger create user account")
+            }
+            syncIngredients()
+        }
         //Get user auth
         auth = Firebase.auth
-
+        //Get Google Sign sign in details
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
         //Setup bindings
         binding = ActivityMainBinding.inflate(layoutInflater)
         //navigation listener
@@ -72,6 +95,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         if (user != null) {
             Log.d(TAG, "Current User: " + user.email)
         }
+
 
         //Setup Toolbar
         toolbar = binding.toolbar2.toolbar
@@ -91,20 +115,23 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         fragmentTransaction.add(binding.fragmentLoad.fragment_container.id, FragmentNewsFeed())
         fragmentTransaction.commit()
 
-        CoroutineScope(IO).launch{
-            syncIngredients()
-        }
 
+    }
+
+    private fun signOut() {
+        // Firebase sign out
+        auth.signOut()
+
+        // Google sign out
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            startActivity(Intent(this, GoogleSignInActivity::class.java))
+        }
     }
 
     //TODO: not sure if i need this atm?
     override fun onClick(v: View) {
     }
 
-    companion object {
-        private const val TAG = "GoogleActivity"
-        //private const val RC_SIGN_IN = 9001
-    }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
 
@@ -130,12 +157,16 @@ class MainActivity : BaseActivity(), View.OnClickListener,
             )
             fragmentTransaction.commit()
         }
+        //Sign out
+        if (p0.itemId == R.id.signOutMain) {
+            signOut()
+        }
         return true
     }
 
     private suspend fun syncIngredients(): Boolean {
         //Show Sync Progress icon
-        val newChefIngredient = ChefIngredient()
+        var newChefIngredient: ChefIngredient
         //Get current user's Ingredients
             val chefIng: HashMap<String, ChefIngredient> = getChefIngredients()
             Log.d(TAG, "Found : ${chefIng.size} Chef Ingredients")
@@ -145,6 +176,7 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         //Compare both sets and build update master
         for (ing in masterIng){
             if (!chefIng.containsKey(ing.key)) {
+                newChefIngredient = ChefIngredient()
                 newChefIngredient.name = ing.value.Name
                 newChefIngredient.type = ing.value.Type
                 newChefIngredient.imgLocation = ing.value.ImgLocation
@@ -192,8 +224,8 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         } catch (e: Exception) {
             null
         }
-        if(data!=null){
-            for( document in data.documents){
+        if (data != null) {
+            for (document in data.documents) {
                 Log.d(TAG, "Found : ${document.data} Master Ingredients")
                 masterIng[document.id] = document.toObject(Ingredient::class.java)!!
             }
@@ -201,4 +233,28 @@ class MainActivity : BaseActivity(), View.OnClickListener,
         return masterIng
     }
 
+    /*
+     * Check user has an account, if not then:
+     * As user to create an account.
+     * Create username. trigger some introduction stuff.
+     */
+    private suspend fun hasChefAccount(): Boolean {
+        //Has the user got an account?
+        val chef: Chef
+        val chefData = mChefCollection.document(mFireBaseUser?.uid.toString())
+            .get()
+            .await()
+        try {
+            chef = chefData.toObject(Chef::class.java)!!
+        } catch (e: Exception) {
+            Log.d(TAG, e.printStackTrace().toString())
+            return false
+        }
+        return chef.Username != null
+    }
+
+    companion object {
+        private const val TAG = "GoogleActivity"
+        //private const val RC_SIGN_IN = 9001
+    }
 }

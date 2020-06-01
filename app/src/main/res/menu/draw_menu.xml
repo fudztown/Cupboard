@@ -10,6 +10,10 @@
                 android:id="@+id/spiceRack"
                 android:icon="@drawable/ic_group_add_black_24dp"
                 android:title="Spice Rack" />
+            <item
+                android:id="@+id/signOutMain"
+                android:icon="@drawable/ic_group_add_black_24dp"
+                android:title="Spice Rack" />
         </menu>
     </item>
 </menu>
