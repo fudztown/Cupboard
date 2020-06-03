@@ -213,9 +213,6 @@ class MainActivity : BaseActivity(), View.OnClickListener,
     }
 
     private suspend fun getMasterIngredients(): HashMap<String, Ingredient> {
-        //TODO ensure the values or Ingredient and ChefIngredient are the same
-        //Will probably do a Hashmap here too. We'll see.
-
         val masterIng: HashMap<String, Ingredient> = HashMap()
         val data = try {
             mIngCollection2
